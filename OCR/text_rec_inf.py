@@ -51,39 +51,36 @@ def init_rec_model(args: Dict):
     torch.cuda.manual_seed_all(args.seed)
     # cudnn.benchmark = True
     # torch.backends.cudnn.deterministic = True
+    
+    args.cuda = args.cuda and torch.cuda.is_available()
+    if args.cuda:
+        torch.set_default_tensor_type('torch.cuda.FloatTensor')
+    else:
+        torch.set_default_tensor_type('torch.FloatTensor')
 
-    try:
-        args.cuda = args.cuda and torch.cuda.is_available()
-        if args.cuda:
-            torch.set_default_tensor_type('torch.cuda.FloatTensor')
-        else:
-            torch.set_default_tensor_type('torch.FloatTensor')
+    # Create data loaders
+    if args.height is None or args.width is None:
+        args.height, args.width = (32, 100)
 
-        # Create data loaders
-        if args.height is None or args.width is None:
-            args.height, args.width = (32, 100)
+    dataset_info = DataInfo(args.voc_type)
 
-        dataset_info = DataInfo(args.voc_type)
+    # Create model
+    model = ModelBuilder(dataset_info, args)
 
-        # Create model
-        model = ModelBuilder(dataset_info, args)
+    # Load from checkpoint
+    model_path = args.trained_model
+    model_wgts = load_checkpoint(model_path)
+    model.load_state_dict(model_wgts['state_dict'])
 
-        # Load from checkpoint
-        model_path = args.trained_model
-        model_wgts = load_checkpoint(model_path)
-        model.load_state_dict(model_wgts['state_dict'])
+    device = 'cpu'
+    if args.cuda:
+        device = torch.device("cuda")
+        model = model.to(device)
+        # model = nn.DataParallel(model)
 
-        device = 'cpu'
-        if args.cuda:
-            device = torch.device("cuda")
-            model = model.to(device)
-            # model = nn.DataParallel(model)
-
-        # Evaluation
-        model.eval()
-        return {'model': model, 'dataset': dataset_info}
-    except Exception as e:
-        raise ValueError('Error initializing text recognition model: {}'.format(e.fmt))
+    # Evaluation
+    model.eval()
+    return {'model': model, 'dataset': dataset_info}
 
 
 def preprocess(img, imgH=32, imgW=100, keep_ratio=False, min_ratio=1):
@@ -191,9 +188,7 @@ def recognize(imgs: Dict[str, np.ndarray], args: Dict, model_artifact: TextRecMo
                                 'stn_output': stn_output}
         return rec_results
 
-    except ValueError as ve:
-        raise ve
-    except TypeError as te:
-        raise te
     except Exception as e:
-        raise ValueError('Something went wrong in text recognition: {}'.format(e))
+        if logger:
+            logger.exception(e)
+        raise

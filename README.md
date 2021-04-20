@@ -7,8 +7,11 @@ cd to package top level directory and:
 python3 setup.py sdist bdist_wheel
 
 ## To create conda env:
+```angular2
 conda env create -f environment.yml --name ocr_test_env
 conda activate ocr_test_env
+```
+
 
 ## To run sample application that runs text detection and recognition on a sample image (paper-title.jpg)
 * First download pre-trained detection and recognition models from [here](https://drive.google.com/drive/folders/13V9txMnTGL0Qw2_WhAGNOxSqIfP68595?usp=sharing) and extract to the 

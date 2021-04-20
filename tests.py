@@ -2,6 +2,7 @@ import unittest
 import json
 import os
 import numpy as np
+import logging
 import OCR as ocr
 from utils import loadImage, write_text_detection_results, write_recognition_results
 
@@ -35,7 +36,7 @@ class TestDetectionMethods(unittest.TestCase):
         img_name = 'spotting.jpg'
         img = loadImage(img_name)
         ocr.text_detection_results = ocr.text_detect(img, self.det_net, self.det_args)
-        # check that 23 boxes are found in this input image
+        # check that 1 box is found in this input image
         self.assertEqual(len(ocr.text_detection_results['bboxes']), 1)
 
     def test_detection_3(self):
@@ -67,7 +68,8 @@ class TestDetectionMethods(unittest.TestCase):
         # incorrect data type for input image
         bad_datatype_img = np.random.randint(0, 255, (0, 0, 3), np.uint16)
         with self.assertRaises(TypeError):
-            ocr.text_detection_results = ocr.text_detect(bad_datatype_img, self.det_net, self.det_args)
+            ocr.text_detection_results = ocr.text_detect(bad_datatype_img, self.det_net, self.det_args,
+                                                         logging.getLogger('test'))
 
 
 class TestRecognitionMethods(unittest.TestCase):

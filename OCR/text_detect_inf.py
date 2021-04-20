@@ -32,24 +32,21 @@ def init_detection_model(args: Dict) -> CRAFT:
         raise ValueError("Incorrect path for text detection model")
     net = CRAFT()  # initialize
 
-    try:
-        if args.cuda:
-            net.load_state_dict(copyStateDict(torch.load(args.trained_model)))
-        else:
-            net.load_state_dict(copyStateDict(torch.load(args.trained_model, map_location='cpu')))
+    if args.cuda:
+        net.load_state_dict(copyStateDict(torch.load(args.trained_model)))
+    else:
+        net.load_state_dict(copyStateDict(torch.load(args.trained_model, map_location='cpu')))
 
-        if args.cuda:
-            net = net.cuda()
-            net = torch.nn.DataParallel(net)
-            cudnn.benchmark = False
+    if args.cuda:
+        net = net.cuda()
+        net = torch.nn.DataParallel(net)
+        cudnn.benchmark = False
 
-        net.eval()
-        return net
-    except Exception as e:
-        raise ValueError('Error initializing text detection model: {}'.format(e.fmt))
+    net.eval()
+    return net
 
 
-def text_detect(img: np.array, net: CRAFT, args: Dict) \
+def text_detect(img: np.array, net: CRAFT, args: Dict, logger=None) \
         -> TextDetectRet:
     """
     Takes as input an 3-channel numpy array of uint8 values in range [0-255] (rgb image), the CRAFT text detection
@@ -154,9 +151,7 @@ def text_detect(img: np.array, net: CRAFT, args: Dict) \
 
         return {'bboxes': bbox_crop_map, 'region_score_map': region_score_hm, 'affinity_score_map': affinity_score_hm,
                 'connected_component_mask': cc_mask_hm}
-    except ValueError as ve:
-        raise ve
-    except TypeError as te:
-        raise te
     except Exception as e:
-        raise ValueError('Something went wrong in text detection: {}'.format(e))
+        if logger:
+            logger.exception(e)
+        raise
