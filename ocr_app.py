@@ -2,7 +2,7 @@ import os
 import json
 import torch
 from utils import loadImage, write_text_detection_results, write_recognition_results
-import OCR as ocr
+import asterocr as ocr
 
 torch.set_num_threads(1)
 

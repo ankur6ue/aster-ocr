@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="OCR",
+    name="asterocr",
     version="0.0.1",
     author="Ankur",
     author_email="ankur6ue@gmail.com",
