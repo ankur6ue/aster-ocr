@@ -1,0 +1,7 @@
+numpy
+pillow
+opencv-python
+sklearn
+scikit-image
+editdistance
+boto3
