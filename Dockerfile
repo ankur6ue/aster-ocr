@@ -22,10 +22,9 @@ RUN pip install -r requirements.txt
 # install OCR python package
 COPY setup.py $BASE_DIR/
 COPY README.md $BASE_DIR/
-RUN python setup.py install
+RUN python setup.py bdist_wheel
 # install the OCR package from dist
-COPY dist $BASE_DIR
-RUN pip install OCR*.whl
+RUN pip install dist/OCR*.whl
 # copy the models into the base image
 COPY models/detection-CRAFT/craft_mlt_25k.pth $BASE_DIR/models/detection-CRAFT/craft_mlt_25k.pth
 COPY models/recognition-ASTER/demo.pth.tar $BASE_DIR/models/recognition-ASTER/demo.pth.tar
