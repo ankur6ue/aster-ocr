@@ -19,6 +19,10 @@ RUN mkdir -p $BASE_DIR
 COPY requirements_docker.txt $BASE_DIR/requirements.txt
 WORKDIR $BASE_DIR
 RUN pip install -r requirements.txt
+# install OCR python package
+COPY setup.py $BASE_DIR/
+COPY README.md $BASE_DIR/
+RUN python setup.py install
 # install the OCR package from dist
 COPY dist $BASE_DIR
 RUN pip install OCR*.whl
