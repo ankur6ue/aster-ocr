@@ -11,6 +11,10 @@ python3 setup.py sdist bdist_wheel
 conda env create -f environment.yml --name ocr_test_env
 conda activate ocr_test_env
 ```
+cd to the newly created dist directory and run:
+```
+pip install OCR*.whl
+```
 
 
 ## To run sample application that runs text detection and recognition on a sample image (paper-title.jpg)

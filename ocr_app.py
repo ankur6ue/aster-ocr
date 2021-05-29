@@ -46,6 +46,9 @@ if __name__ == '__main__':
         max_y = (int)(bbox_coords[5])
         crops[k] = img[min_y:max_y, min_x:max_x, :]
     recognition_results = ocr.recognize(crops, rec_args, rec_model)
+    print("Recognition successful")
+    for k, v in recognition_results.items():
+        print('{0}: {1}'.format(k, v['result']))
     write_recognition_results(base_file_name, recognition_results)
 
 

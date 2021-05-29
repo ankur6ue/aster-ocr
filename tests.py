@@ -4,7 +4,7 @@ import os
 import numpy as np
 import logging
 import OCR as ocr
-from utils import loadImage, write_text_detection_results, write_recognition_results
+from utils import loadImage, write_text_detection_results, write_recognition_results, divide_chunks
 
 
 env_file = 'env_local.list'
