@@ -9,7 +9,7 @@ while IFS= read -r line; do
   echo "$line"
   worker_ip=$line
   echo Apollo11 | ssh -tt ankur@$worker_ip -i $SSH_KEY_LOCATION 'mkdir -p' ${REMOTE_DIR} '&& cd' ${REMOTE_DIR} \
-    '&& git clone' ${REPOSRC} ${LOCALREPO} '2> /dev/null || (cd' ${LOCALREPO} '; git reset --hard origin/main)'
+    '&& git clone' ${REPOSRC} ${LOCALREPO} '2> /dev/null || (cd' ${LOCALREPO} '; git clean -f; git pull)'
   # copy model files
   rsync -e "ssh -i $SSH_KEY_LOCATION" -a --relative ./models ankur@$worker_ip:${REMOTE_DIR}/aster-ocr
 
